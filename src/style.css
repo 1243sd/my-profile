@@ -87,6 +87,11 @@
   .timeline-body h3{font-size:27px}
   .timeline-description{font-size:13px}
 }
+@media(max-width:420px){
+  .hero-actions{flex-wrap:wrap;gap:22px}
+  .hero-actions .flame-action,.hero-actions .flame-action .primary-link,.hero-actions>.primary-link{width:100%}
+  .hero-actions .text-link{white-space:nowrap}
+}
 @media(prefers-reduced-motion:reduce){
   .motion-ready .motion-reveal,.motion-ready .motion-reveal.in-view{opacity:1;transform:none;transition:none}
   .motion-ready .hero-copy .eyebrow,.motion-ready .hero-copy .hero-kicker,.motion-ready .hero-copy h1,.motion-ready .hero-copy .hero-statement,.motion-ready .hero-copy .hero-actions,.project-stage{animation:none}
