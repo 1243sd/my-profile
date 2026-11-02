@@ -55,11 +55,10 @@
 
 /* Flame Wrap's canvas surrounds the live link; the link remains keyboard accessible. */
 .flame-action{display:inline-block;isolation:isolate;flex:none}
-.flame-action .primary-link,.flame-action .header-contact{position:relative;z-index:1}
-.flame-action .primary-link{min-width:200px}
-.flame-action .header-contact{background:#fffdfacd}
-.flame-action:hover .primary-link{transform:translateY(-3px)}
-.flame-action:hover .header-contact{background:#3158ce;color:#fff}
+.flame-action .primary-link{position:relative;z-index:1;min-width:200px;transition:background .25s,box-shadow .25s}
+.flame-action canvas[aria-hidden]{opacity:0;clip-path:inset(60px 22px 26px 22px round 16px);transition:opacity .28s ease}
+.flame-action:hover canvas[aria-hidden],.flame-action:focus-within canvas[aria-hidden]{opacity:.3}
+.flame-action:hover .primary-link,.flame-action:focus-within .primary-link{background:#2448b8;box-shadow:0 9px 26px #3158ce38}
 
 .project-stage{animation:caseEnter .55s cubic-bezier(.2,.7,.2,1) both}
 .motion-ready .motion-reveal{opacity:0;transform:translateY(38px);transition:opacity .7s ease,transform .8s cubic-bezier(.18,.8,.25,1)}
@@ -73,7 +72,6 @@
 @keyframes caseEnter{from{opacity:.25;transform:translateY(18px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
 
 @media(max-width:760px){
-  .site-header>.flame-action{display:none}
   .experience .section-heading{margin-bottom:46px}
   .timeline{gap:44px;padding:16px 0 25px}
   .timeline-track{left:27px;transform:none}

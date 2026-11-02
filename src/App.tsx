@@ -65,7 +65,7 @@ function useScrollReveal(reducedMotion: boolean) {
 function FlameAction({ href, className, children, reducedMotion }: { href: string; className: string; children: ReactNode; reducedMotion: boolean }) {
   const link = <a className={className} href={href}>{children}</a>
   if (reducedMotion) return link
-  return <Suspense fallback={link}><FlameWrap className="flame-action" color={[1, 0.36, 0.17]} intensity={0.8} height={38} spread={8} radius={4} speed={0.65} sparks={1.2} sparkDensity={0.7} smoke={0.25} melt={1.5} distortion={3}>{link}</FlameWrap></Suspense>
+  return <Suspense fallback={link}><FlameWrap className="flame-action" color={[1, 0.36, 0.17]} intensity={0.4} height={24} spread={6} radius={3} speed={0.55} sparks={0.2} sparkDensity={0.3} smoke={0} melt={0.7} distortion={1.5}>{link}</FlameWrap></Suspense>
 }
 
 function ExperienceTimeline({ reducedMotion }: { reducedMotion: boolean }) {
@@ -143,7 +143,7 @@ function App() {
     <header className="site-header">
       <a className="brand" href="#top" aria-label="返回首页"><span className="brand-mark">{profile.initials}<span className="brand-dot">.</span></span><span className="brand-sub">PORTFOLIO<br/>2026</span></a>
       <nav aria-label="主导航">{nav.map(item => <a key={item.href} href={item.href}>{item.label}</a>)}</nav>
-      <FlameAction className="header-contact" href="#contact" reducedMotion={reducedMotion}>联系我 <Arrow diagonal /></FlameAction>
+      <a className="header-contact" href="#contact">联系我 <Arrow diagonal /></a>
     </header>
 
     <main id="main">
