@@ -8,6 +8,8 @@ export const profile = {
   location: '中国 · 可远程协作',
   availability: '开放内容与增长相关机会',
   github: 'https://github.com/1243sd',
+  xiaohongshu: '',
+  douyin: '',
   email: '',
   resume: '',
   focus: ['小红书内容运营', '抖音短视频运营', '社区用户运营', '活动策划与复盘'],

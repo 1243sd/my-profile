@@ -117,7 +117,7 @@ function App() {
 }
 
 function ContactContent() {
-  return <div className="contact-inner"><span className="section-index">05 / LET'S CONNECT</span><p className="contact-overline">有好的内容想法？聊聊下一步。</p><h2 id="contact-title">一起做好内容，<br/><em>让更多人看见</em><span className="accent">.</span></h2><div className="contact-links"><a href={profile.github} target="_blank" rel="noreferrer">GITHUB <Arrow diagonal /></a>{profile.email && <a href={`mailto:${profile.email}`}>EMAIL <Arrow diagonal /></a>}{profile.resume && <a href={profile.resume} target="_blank" rel="noreferrer">简历 <Arrow diagonal /></a>}</div><div className="contact-bottom"><span>OPEN TO NEW IDEAS</span><span>{profile.location}</span></div></div>
+  return <div className="contact-inner"><span className="section-index">05 / LET'S CONNECT</span><p className="contact-overline">有好的内容想法？聊聊下一步。</p><h2 id="contact-title">一起做好内容，<br/><em>让更多人看见</em><span className="accent">.</span></h2><div className="contact-links">{profile.xiaohongshu && <a href={profile.xiaohongshu} target="_blank" rel="noreferrer">小红书 <Arrow diagonal /></a>}{profile.douyin && <a href={profile.douyin} target="_blank" rel="noreferrer">抖音 <Arrow diagonal /></a>}{profile.email && <a href={`mailto:${profile.email}`}>EMAIL <Arrow diagonal /></a>}{profile.resume && <a href={profile.resume} target="_blank" rel="noreferrer">简历 <Arrow diagonal /></a>}<a href={profile.github} target="_blank" rel="noreferrer">GITHUB <Arrow diagonal /></a></div><div className="contact-bottom"><span>OPEN TO NEW IDEAS</span><span>{profile.location}</span></div></div>
 }
 
 export default App
