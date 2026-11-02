@@ -4,6 +4,7 @@ import { profile } from './content'
 const HeroParticles = lazy(() => import('./effects/HeroParticles'))
 const ProjectLiquid = lazy(() => import('./effects/ProjectLiquid'))
 const ContactRipple = lazy(() => import('./effects/ContactRipple'))
+const FlameWrap = lazy(() => import('./components/canvasui/FlameWrap').then(module => ({ default: module.FlameWrap })))
 
 function useReducedMotion() {
   const [reduced, setReduced] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
@@ -22,7 +23,7 @@ function OnView({ children, fallback, className = '' }: { children: ReactNode; f
   useEffect(() => {
     const target = ref.current
     if (!target) return
-    if (!('IntersectionObserver' in window)) {
+    if (typeof window.IntersectionObserver !== 'function') {
       setVisible(true)
       return
     }
@@ -31,6 +32,82 @@ function OnView({ children, fallback, className = '' }: { children: ReactNode; f
     return () => observer.disconnect()
   }, [])
   return <div ref={ref} className={className}>{visible ? <Suspense fallback={fallback}>{children}</Suspense> : fallback}</div>
+}
+
+function useScrollReveal(reducedMotion: boolean) {
+  useEffect(() => {
+    if (reducedMotion) return
+    document.documentElement.classList.add('motion-ready')
+    let frame = 0
+    const revealVisible = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        document.querySelectorAll('.motion-reveal:not(.in-view)').forEach(element => {
+          const rect = element.getBoundingClientRect()
+          if (rect.top < window.innerHeight - 36 && rect.bottom > 0) element.classList.add('in-view')
+        })
+      })
+    }
+    revealVisible()
+    window.addEventListener('scroll', revealVisible, { passive: true })
+    window.addEventListener('resize', revealVisible)
+    window.addEventListener('hashchange', revealVisible)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', revealVisible)
+      window.removeEventListener('resize', revealVisible)
+      window.removeEventListener('hashchange', revealVisible)
+      document.documentElement.classList.remove('motion-ready')
+    }
+  }, [reducedMotion])
+}
+
+function FlameAction({ href, className, children, reducedMotion }: { href: string; className: string; children: ReactNode; reducedMotion: boolean }) {
+  const link = <a className={className} href={href}>{children}</a>
+  if (reducedMotion) return link
+  return <Suspense fallback={link}><FlameWrap className="flame-action" color={[1, 0.36, 0.17]} intensity={0.8} height={38} spread={8} radius={4} speed={0.65} sparks={1.2} sparkDensity={0.7} smoke={0.25} melt={1.5} distortion={3}>{link}</FlameWrap></Suspense>
+}
+
+function ExperienceTimeline({ reducedMotion }: { reducedMotion: boolean }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [progress, setProgress] = useState(reducedMotion ? 100 : 0)
+  const [active, setActive] = useState(0)
+
+  useEffect(() => {
+    if (reducedMotion) return
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const timeline = ref.current
+      if (!timeline) return
+      const rect = timeline.getBoundingClientRect()
+      const point = window.innerHeight * 0.64
+      setProgress(Math.max(0, Math.min(100, Math.round((point - rect.top) / rect.height * 100))))
+      const nodes = Array.from(timeline.querySelectorAll('.timeline-node'))
+      const nearest = nodes.reduce((best, node, index) => {
+        const distance = Math.abs(node.getBoundingClientRect().top - point)
+        return distance < best.distance ? { index, distance } : best
+      }, { index: 0, distance: Infinity })
+      setActive(nearest.index)
+    }
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update) }
+    update()
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+    }
+  }, [reducedMotion])
+
+  return <div className="timeline" ref={ref}>
+    <div className="timeline-track" aria-hidden="true"><span className="timeline-progress" style={{ height: `${progress}%` }} /></div>
+    {profile.experiences.map((item, i) => <article className={`timeline-item motion-reveal${i === active ? ' is-active' : ''}`} key={item.period}>
+      <div className="timeline-marker"><button className="timeline-node" type="button" aria-label={`查看 ${item.period} ${item.title}`} onClick={() => { setActive(i); ref.current?.querySelectorAll('.timeline-item')[i]?.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'center' }) }}><span /></button><span className="timeline-period">{item.period}</span></div>
+      <div className="timeline-body"><span className="timeline-no">0{i + 1}</span><span className="timeline-label">CHAPTER 0{i + 1}</span><h3>{item.title}</h3><p className="timeline-company">{item.company}</p><p className="timeline-description">{item.description}</p><div className="tag-list">{item.tags.map(tag => <span key={tag}>{tag}</span>)}</div></div>
+    </article>)}
+  </div>
 }
 
 const nav = [
@@ -45,7 +122,7 @@ function Arrow({ diagonal = false }: { diagonal?: boolean }) {
 }
 
 function SectionHeading({ id, index, eyebrow, title, aside }: { id: string; index: string; eyebrow: string; title: string; aside?: string }) {
-  return <div className="section-heading"><span className="section-index">{index} / {eyebrow}</span><h2 id={id}>{title}</h2>{aside && <p>{aside}</p>}</div>
+  return <div className="section-heading motion-reveal"><span className="section-index">{index} / {eyebrow}</span><h2 id={id}>{title}</h2>{aside && <p>{aside}</p>}</div>
 }
 
 function ProjectArt({ art, number }: { art: string; number: string }) {
@@ -55,6 +132,7 @@ function ProjectArt({ art, number }: { art: string; number: string }) {
 
 function App() {
   const reducedMotion = useReducedMotion()
+  useScrollReveal(reducedMotion)
   const [activeProject, setActiveProject] = useState(0)
   const project = profile.projects[activeProject]
   const art = <ProjectArt art={project.art} number={project.number} />
@@ -65,7 +143,7 @@ function App() {
     <header className="site-header">
       <a className="brand" href="#top" aria-label="返回首页"><span className="brand-mark">{profile.initials}<span className="brand-dot">.</span></span><span className="brand-sub">PORTFOLIO<br/>2026</span></a>
       <nav aria-label="主导航">{nav.map(item => <a key={item.href} href={item.href}>{item.label}</a>)}</nav>
-      <a className="header-contact" href="#contact">联系我 <Arrow diagonal /></a>
+      <FlameAction className="header-contact" href="#contact" reducedMotion={reducedMotion}>联系我 <Arrow diagonal /></FlameAction>
     </header>
 
     <main id="main">
@@ -76,7 +154,7 @@ function App() {
           <p className="hero-kicker">你好，我是 <strong>{profile.name}</strong></p>
           <h1 id="hero-title">让内容<span className="hero-outline">发光</span><br/>让连接发生<span className="hero-period">.</span></h1>
           <p className="hero-statement">{profile.statement}</p>
-          <div className="hero-actions"><a className="primary-link" href="#projects">查看运营案例 <Arrow diagonal /></a><a className="text-link" href="#about">了解更多 <span aria-hidden="true">↓</span></a></div>
+          <div className="hero-actions"><FlameAction className="primary-link" href="#projects" reducedMotion={reducedMotion}>查看运营案例 <Arrow diagonal /></FlameAction><a className="text-link" href="#about">了解更多 <span aria-hidden="true">↓</span></a></div>
         </div>
         <div className="hero-visual" aria-hidden="true">
           <div className="hero-visual-ring" />
@@ -94,12 +172,12 @@ function App() {
 
       <section id="experience" className="experience section-pad" aria-labelledby="experience-title">
         <SectionHeading id="experience-title" index="02" eyebrow="JOURNEY" title="工作经历" aside="从内容策划到社区经营，把想法变成持续的行动。" />
-        <div className="timeline">{profile.experiences.map((item, i) => <article className="timeline-item" key={item.period}><div className="timeline-period"><span className="timeline-node"/>{item.period}</div><div className="timeline-body"><span className="timeline-no">0{i + 1}</span><h3>{item.title}</h3><p className="timeline-company">{item.company}</p><p className="timeline-description">{item.description}</p><div className="tag-list">{item.tags.map(tag => <span key={tag}>{tag}</span>)}</div></div></article>)}</div>
+        <ExperienceTimeline reducedMotion={reducedMotion} />
       </section>
 
       <section id="projects" className="projects section-pad" aria-labelledby="projects-title">
         <SectionHeading id="projects-title" index="03" eyebrow="SELECTED CASES" title="运营案例" aside="展示策划思路与执行结构。以下均为演示案例。" />
-        <div className="project-stage"><div className="project-stage-visual">{!reducedMotion ? <OnView className="project-effect" fallback={art}><ProjectLiquid>{art}</ProjectLiquid></OnView> : art}<div className="project-stage-index">{project.number} <span>/ 0{profile.projects.length}</span></div></div><div className="project-stage-copy"><div className="project-stage-top"><span>FEATURED PROJECT</span><span>{project.year}</span></div><p className="project-english">{project.english}</p><h3>{project.title}</h3><p className="project-category">{project.category}</p><p className="project-description">{project.description}</p><div className="project-outcome"><span>项目说明</span><p>{project.outcome}</p></div><div className="tag-list">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div>{project.link && <a className="project-link" href={project.link} target="_blank" rel="noreferrer">查看项目 <Arrow diagonal /></a>}</div></div>
+        <div className="project-stage" key={project.number}><div className="project-stage-visual">{!reducedMotion ? <OnView className="project-effect" fallback={art}><ProjectLiquid>{art}</ProjectLiquid></OnView> : art}<div className="project-stage-index">{project.number} <span>/ 0{profile.projects.length}</span></div></div><div className="project-stage-copy"><div className="project-stage-top"><span>FEATURED PROJECT</span><span>{project.year}</span></div><p className="project-english">{project.english}</p><h3>{project.title}</h3><p className="project-category">{project.category}</p><p className="project-description">{project.description}</p><div className="project-outcome"><span>项目说明</span><p>{project.outcome}</p></div><div className="tag-list">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div>{project.link && <a className="project-link" href={project.link} target="_blank" rel="noreferrer">查看项目 <Arrow diagonal /></a>}</div></div>
         <div className="project-selector" aria-label="选择案例">{profile.projects.map((item, i) => <button key={item.number} type="button" className={i === activeProject ? 'project-tab active' : 'project-tab'} onClick={() => setActiveProject(i)} aria-pressed={i === activeProject}><span>{item.number}</span><strong>{item.title}</strong><small>{item.category}</small><Arrow diagonal /></button>)}</div>
       </section>
 
