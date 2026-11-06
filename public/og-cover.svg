@@ -1,1 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630"><rect width="1200" height="630" fill="#fbf9f3"/><circle cx="950" cy="300" r="265" fill="#ffd6b3"/><circle cx="950" cy="300" r="190" fill="none" stroke="#3158ce" stroke-width="11"/><circle cx="950" cy="300" r="110" fill="#f07155"/><text x="82" y="155" font-family="Arial,sans-serif" font-size="24" letter-spacing="8" fill="#3158ce">CONTENT &amp; COMMUNITY</text><text x="72" y="350" font-family="Arial,sans-serif" font-size="88" font-weight="bold" fill="#202c42">让内容发光，让连接发生.</text><text x="80" y="495" font-family="Arial,sans-serif" font-size="28" fill="#69748a">小红书 × 抖音 × 社区运营</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#efedff"/>
+  <circle cx="1065" cy="120" r="275" fill="none" stroke="#4737d6" stroke-opacity=".12" stroke-width="90"/>
+  <text x="75" y="105" font-family="Arial,sans-serif" font-size="22" font-weight="bold" letter-spacing="5" fill="#4737d6">CONTENT × COMMUNITY</text>
+  <text x="70" y="288" font-family="Arial,'Microsoft YaHei',sans-serif" font-size="100" font-weight="900" fill="#202331">把内容</text>
+  <text x="70" y="414" font-family="Arial,'Microsoft YaHei',sans-serif" font-size="100" font-weight="900" fill="#4737d6">做出回响<tspan fill="#f16d61">.</tspan></text>
+  <text x="75" y="542" font-family="Arial,'Microsoft YaHei',sans-serif" font-size="26" fill="#575970">小红书 · 抖音 · 社区运营作品集</text>
+  <g transform="translate(705 110) rotate(-9 135 170)">
+    <rect x="18" y="18" width="265" height="330" fill="#202331" opacity=".12"/>
+    <rect width="265" height="330" fill="#ffb0a3"/>
+    <text x="24" y="40" font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#202331">01 / NOTE</text>
+    <text x="24" y="160" font-family="Arial,'Microsoft YaHei',sans-serif" font-size="37" font-weight="bold" fill="#202331">有用的灵感</text>
+    <text x="24" y="208" font-family="Arial,'Microsoft YaHei',sans-serif" font-size="37" font-weight="bold" fill="#202331">值得被看见</text>
+    <rect x="24" y="246" width="144" height="8" fill="#f7f4ed"/>
+  </g>
+  <g transform="translate(970 250) rotate(8 78 145)">
+    <rect x="14" y="14" width="160" height="280" fill="#202331" opacity=".12"/>
+    <rect width="160" height="280" rx="20" fill="#202331"/>
+    <rect x="8" y="8" width="144" height="264" rx="13" fill="#b7dbff"/>
+    <circle cx="80" cy="92" r="32" fill="#4737d6"/>
+    <path d="M72 76v32l27-16z" fill="#f7f4ed"/>
+    <text x="23" y="191" font-family="Arial,'Microsoft YaHei',sans-serif" font-size="22" font-weight="bold" fill="#202331">把故事</text>
+    <text x="23" y="220" font-family="Arial,'Microsoft YaHei',sans-serif" font-size="22" font-weight="bold" fill="#202331">拍进每一秒</text>
+  </g>
+</svg>
