@@ -1,7 +1,8 @@
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import { profile } from './content'
 
-const HeroParticles = lazy(() => import('./effects/HeroParticles'))
+const HeroClouds = lazy(() => import('./effects/HeroClouds'))
+const HeroDroplets = lazy(() => import('./effects/HeroDroplets'))
 const ProjectLiquid = lazy(() => import('./effects/ProjectLiquid'))
 const ContactRipple = lazy(() => import('./effects/ContactRipple'))
 
@@ -105,6 +106,38 @@ const nav = [
   { label: '教育', href: '#education' },
 ]
 
+function FloatingNav() {
+  const [active, setActive] = useState('')
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const menuRef = useRef<HTMLDetailsElement>(null)
+  useEffect(() => {
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+      setScrollProgress(maxScroll > 0 ? window.scrollY / maxScroll : 0)
+      const current = [...nav].reverse().find(item => {
+        const target = document.querySelector(item.href)
+        return target && target.getBoundingClientRect().top <= 180
+      })
+      setActive(current?.href ?? '')
+    }
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update) }
+    update()
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    return () => { cancelAnimationFrame(frame); window.removeEventListener('scroll', schedule); window.removeEventListener('resize', schedule) }
+  }, [])
+  const links = nav.map(item => <a key={item.href} href={item.href} aria-current={active === item.href ? 'location' : undefined} onClick={() => { if (menuRef.current) menuRef.current.open = false }}>{item.label}</a>)
+  return <header className="site-header">
+    <a className="brand" href="#top" aria-label="返回首页"><span className="brand-mark">{profile.initials}<span className="brand-dot">.</span></span><span className="brand-sub">CONTENT<br />PORTFOLIO</span></a>
+    <nav className="desktop-nav" aria-label="主导航">{links}</nav>
+    <a className="header-contact" href="#contact">联系我 <Arrow diagonal /></a>
+    <details className="mobile-menu" ref={menuRef}><summary aria-label="打开导航菜单"><span>菜单</span><span className="menu-icon" aria-hidden="true">☰</span></summary><nav aria-label="手机导航">{links}<a href="#contact" onClick={() => { if (menuRef.current) menuRef.current.open = false }}>联系</a></nav></details>
+    <span className="header-progress" aria-hidden="true" style={{ transform: `scaleX(${scrollProgress})` }} />
+  </header>
+}
+
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   return <span aria-hidden="true" className="arrow">{diagonal ? '↗' : '→'}</span>
 }
@@ -121,6 +154,16 @@ function ProjectArt({ art, number }: { art: string; number: string }) {
     <div className="art-sheet"><span>{labels[art]}</span><strong>{words[art]}</strong><div className="art-lines"><i /><i /><i /></div><small>CONTENT EXPERIMENT {number}</small></div>
     <div className="art-mini"><span>IDEAS<br />IN MOTION</span><b>↗</b></div>
     <span className="art-caption">SELECTED CASE / {number}</span>
+  </div>
+}
+
+function HeroVisualContent() {
+  return <div className="hero-visual-inner" aria-hidden="true">
+    <div className="hero-particle-field"><img className="hero-static" src={`${import.meta.env.BASE_URL}orbit.svg`} alt="" /></div>
+    <div className="scene-card scene-card--note"><span>01 / 小红书</span><strong>有用的灵感<br />值得被看见</strong><i /><small>CONTENT / NOTE</small></div>
+    <div className="scene-card scene-card--video"><span>02 / 抖音</span><b className="scene-play">▶</b><strong>把故事<br />拍进每一秒</strong><small>VIDEO / STORY</small></div>
+    <div className="scene-card scene-card--community"><span>03 / 社区</span><strong>让热爱<br />聚在一起</strong><div className="scene-people"><i /><i /><i /></div></div>
+    <span className="scene-spark">✳</span>
   </div>
 }
 
@@ -145,13 +188,10 @@ function App() {
   useScrollReveal(reducedMotion)
   return <>
     <a className="skip-link" href="#main">跳转到正文</a>
-    <header className="site-header">
-      <a className="brand" href="#top" aria-label="返回首页"><span className="brand-mark">{profile.initials}<span className="brand-dot">.</span></span><span className="brand-sub">CONTENT<br />PORTFOLIO</span></a>
-      <nav aria-label="主导航">{nav.map(item => <a key={item.href} href={item.href}>{item.label}</a>)}</nav>
-      <a className="header-contact" href="#contact">联系我 <Arrow diagonal /></a>
-    </header>
+    <FloatingNav />
     <main id="main">
       <section id="top" className="hero" aria-labelledby="hero-title">
+        <div className="hero-atmosphere" aria-hidden="true"><div className="hero-atmosphere-base" />{!reducedMotion && <OnView className="hero-cloud-slot" fallback={null}><HeroClouds /></OnView>}</div>
         <div className="hero-copy">
           <div className="eyebrow"><span className="eyebrow-line" /> CONTENT × COMMUNITY <span>2026</span></div>
           <p className="hero-kicker">你好，我是 <strong>{profile.name}</strong><span className="hero-role"> / {profile.role}</span></p>
@@ -160,13 +200,7 @@ function App() {
           <div className="hero-actions"><a className="primary-link" href="#projects">探索运营案例 <Arrow diagonal /></a><a className="text-link" href="#about">认识我 <span aria-hidden="true">↓</span></a></div>
           <span className="hero-note">从洞察开始，让表达更有力量。</span>
         </div>
-        <div className="hero-visual" aria-hidden="true">
-          <div className="hero-particle-field"><img className="hero-static" src={`${import.meta.env.BASE_URL}orbit.svg`} alt="" />{!reducedMotion && <OnView className="hero-effect" fallback={null}><HeroParticles /></OnView>}</div>
-          <div className="scene-card scene-card--note"><span>01 / 小红书</span><strong>有用的灵感<br />值得被看见</strong><i /><small>CONTENT / NOTE</small></div>
-          <div className="scene-card scene-card--video"><span>02 / 抖音</span><b className="scene-play">▶</b><strong>把故事<br />拍进每一秒</strong><small>VIDEO / STORY</small></div>
-          <div className="scene-card scene-card--community"><span>03 / 社区</span><strong>让热爱<br />聚在一起</strong><div className="scene-people"><i /><i /><i /></div></div>
-          <span className="scene-spark">✳</span>
-        </div>
+        <div className="hero-visual">{!reducedMotion ? <OnView className="hero-droplet-slot" fallback={<HeroVisualContent />}><HeroDroplets><HeroVisualContent /></HeroDroplets></OnView> : <HeroVisualContent />}</div>
         <div className="hero-bottom"><span>SCROLL TO EXPLORE <span className="scroll-line" /></span><span>{profile.location}</span></div>
       </section>
       <div className="ticker" aria-hidden="true"><div className="ticker-track"><span>内容策划 ✳ 用户洞察 ✳ 小红书运营 ✳ 短视频创意 ✳ 社区共创 ✳ 数据复盘 ✳</span><span>内容策划 ✳ 用户洞察 ✳ 小红书运营 ✳ 短视频创意 ✳ 社区共创 ✳ 数据复盘 ✳</span></div></div>
@@ -174,7 +208,7 @@ function App() {
         <SectionHeading id="about-title" index="01" eyebrow="ABOUT ME" title="关于我" aside="好内容，始于对人的理解。" />
         <div className="about-layout">
           <div className="about-deco motion-reveal" aria-hidden="true"><span>LISTEN<span> / </span><br />CREATE<span> / </span><br />GROW<span className="accent">.</span></span><small>IDEAS BECOME CONNECTIONS</small></div>
-          <div className="about-content motion-reveal"><p className="about-lead">我在做的，是让<span className="accent">内容与人</span>真正相遇。</p><p>{profile.intro}</p><div className="focus-list">{profile.focus.map((item, index) => <div key={item}><span>0{index + 1}</span><strong>{item}</strong><Arrow diagonal /></div>)}</div><div className="about-meta"><div><span>坐标</span><strong>{profile.location}</strong></div><div><span>当前状态</span><strong>{profile.availability}</strong></div></div></div>
+          <div className="about-content motion-reveal"><p className="about-lead">我在做的，是让<span className="accent">内容与人</span>真正相遇。</p><p>{profile.intro}</p><div className="focus-list">{profile.focus.map((item, index) => <div key={item.title}><span>0{index + 1}</span><strong>{item.title}</strong><p>{item.detail}</p><Arrow diagonal /></div>)}</div><div className="about-meta"><div><span>坐标</span><strong>{profile.location}</strong></div><div><span>当前状态</span><strong>{profile.availability}</strong></div></div></div>
         </div>
       </section>
       <section id="experience" className="experience section-pad" aria-labelledby="experience-title">
@@ -188,7 +222,7 @@ function App() {
           const art = <ProjectArt art={project.art} number={project.number} />
           return <article className={`case-story case-story--${project.art} motion-reveal`} id={`case-${project.number}`} key={project.number}>
             <div className="case-visual">{index === 0 && !reducedMotion ? <OnView className="project-effect" fallback={art}><ProjectLiquid>{art}</ProjectLiquid></OnView> : art}</div>
-            <div className="case-copy"><div className="case-top"><span>CASE / {project.number}</span><span>{project.year}</span></div><span className="case-platform">{project.platform}</span><h3>{project.title}</h3><p className="case-english">{project.english}</p><p className="case-description">{project.description}</p><div className="case-outcome"><span>项目说明</span><p>{project.outcome}</p></div><div className="tag-list">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div>{project.link && <a className="project-link" href={project.link} target="_blank" rel="noreferrer">查看项目 <Arrow diagonal /></a>}</div>
+            <div className="case-copy"><div className="case-top"><span>CASE / {project.number}</span><span>{project.year}</span></div><span className="case-platform">{project.platform}</span><h3>{project.title}</h3><p className="case-english">{project.english}</p><p className="case-description">{project.description}</p><div className="case-process"><span>工作路径 / 示例</span><ol>{project.process.map(step => <li key={step.label}><strong>{step.label}</strong><p>{step.detail}</p></li>)}</ol></div><div className="case-outcome"><span>项目说明</span><p>{project.outcome}</p></div><div className="tag-list">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div>{project.link && <a className="project-link" href={project.link} target="_blank" rel="noreferrer">查看项目 <Arrow diagonal /></a>}</div>
           </article>
         })}</div>
       </section>

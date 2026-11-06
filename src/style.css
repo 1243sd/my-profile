@@ -13,6 +13,7 @@
 }
 * { box-sizing: border-box }
 html { scroll-behavior: smooth }
+section[id], .case-story { scroll-margin-top: 104px }
 body { margin: 0; min-width: 280px }
 a { color: inherit; text-decoration: none }
 button { font: inherit }
@@ -31,18 +32,27 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--coral); outline
 .tag-list { display: flex; flex-wrap: wrap; gap: 8px }
 .tag-list span { padding: 8px 12px; border: 1px solid currentColor; font-size: 11px; font-weight: 700 }
 
-.site-header { position: absolute; top: 0; left: 0; right: 0; z-index: 30; height: 96px; display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 0 var(--edge); border-bottom: 1px solid #20233128 }
+.site-header { position: fixed; top: 12px; left: var(--edge); right: var(--edge); z-index: 30; height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 0 22px; border: 1px solid #20233128; border-radius: 16px; background: #fbf9f1e8; box-shadow: 0 10px 35px #20233118; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); overflow: visible }
 .brand { display: inline-flex; align-items: center; gap: 14px; flex: none }
 .brand-mark { font: 900 30px/1 Arial, sans-serif; letter-spacing: -.14em }
 .brand-dot { color: var(--coral) }
 .brand-sub { font: 800 9px/1.4 Arial, sans-serif; letter-spacing: .15em }
-.site-header nav { display: flex; align-items: center; gap: clamp(22px, 3vw, 48px); font-size: 12px; font-weight: 800 }
+.site-header .desktop-nav { display: flex; align-items: center; gap: clamp(22px, 3vw, 48px); font-size: 12px; font-weight: 800 }
 .site-header nav a, .text-link, .site-footer a { transition: color .2s ease }
 .site-header nav a:hover, .text-link:hover, .site-footer a:hover { color: var(--purple) }
+.site-header nav a[aria-current="location"] { color: var(--purple) }
+.site-header nav a[aria-current="location"]::after { content: ""; display: block; height: 3px; margin-top: 4px; background: var(--coral) }
+.header-progress { position: absolute; bottom: -1px; left: 16px; right: 16px; height: 3px; border-radius: 3px; background: var(--coral); transform-origin: left; pointer-events: none }
+.mobile-menu { display: none }
 .header-contact { display: inline-flex; align-items: center; gap: 28px; flex: none; padding: 13px 17px; border: 1px solid var(--ink); font-size: 12px; font-weight: 800; transition: background .25s, color .25s }
 .header-contact:hover { background: var(--ink); color: var(--paper) }
 
-.hero { position: relative; display: grid; grid-template-columns: 1.04fr .96fr; align-items: center; gap: 2vw; min-height: min(920px, 100svh); padding: 142px var(--edge) 110px; overflow: hidden; background: #efedff }
+.hero { position: relative; display: grid; grid-template-columns: 1.04fr .96fr; align-items: center; gap: 2vw; min-height: min(920px, 100svh); padding: 142px var(--edge) 110px; overflow: hidden; background: #e9e8fb }
+.hero-atmosphere { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden }
+.hero-atmosphere-base, .hero-cloud-slot, .hero-clouds { position: absolute; inset: 0; width: 100%; height: 100% }
+.hero-atmosphere-base { background: radial-gradient(ellipse at 88% 9%, #ffd6be 0, transparent 34%), radial-gradient(ellipse at 8% 65%, #d9d3ff 0, transparent 49%), radial-gradient(ellipse at 70% 95%, #c9eada 0, transparent 44%), #f1edff }
+.hero-clouds { opacity: .77 }
+.hero-clouds>div { overflow: hidden !important }
 .hero::before { content: ""; position: absolute; width: 52vw; aspect-ratio: 1; right: -17vw; top: -15vw; border: 1px solid #4737d627; border-radius: 50%; box-shadow: 0 0 0 90px #4737d60a, 0 0 0 220px #4737d606 }
 .hero-copy { position: relative; z-index: 2; max-width: 850px }
 .eyebrow { display: flex; align-items: center; gap: 13px; color: var(--purple); font: 800 11px/1.4 Arial, sans-serif; letter-spacing: .2em }
@@ -65,6 +75,9 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--coral); outline
 .scroll-line { display: inline-block; width: 70px; height: 1px; background: currentColor }
 
 .hero-visual { position: relative; z-index: 1; width: 100%; height: clamp(540px, 47vw, 700px) }
+.hero-visual-inner, .hero-droplet-slot, .hero-droplets { position: relative; width: 100%; height: 100% }
+.hero-droplets>div:not(canvas) { overflow: hidden !important }
+.hero-droplets>canvas:last-child { opacity: .46 }
 .hero-particle-field { position: absolute; inset: 5% 0 7% 0; opacity: .48 }
 .hero-static, .hero-effect, .hero-particles { position: absolute; inset: 0; width: 100%; height: 100% }
 .hero-static { object-fit: contain; opacity: .35; padding: 8% }
@@ -109,6 +122,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--coral); outline
 .focus-list>div:nth-child(4) { background: #e4edaa }
 .focus-list>div span:first-child { font: 800 11px Arial, sans-serif }
 .focus-list>div strong { margin-top: auto; font-size: clamp(14px, 1.4vw, 19px) }
+.focus-list>div p { margin: 10px 0 0; color: #4e5261; font-size: 11px; line-height: 1.6 }
 .focus-list>div .arrow { position: absolute; top: 14px; right: 17px }
 .about-meta { display: flex; flex-wrap: wrap; gap: 34px; margin-top: 35px; padding-top: 23px; border-top: 1px solid #20233132 }
 .about-meta div { display: flex; flex-direction: column; gap: 6px }
@@ -146,7 +160,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--coral); outline
 .case-index a:hover span { color: var(--lemon) }
 .case-index a strong { white-space: nowrap }
 .case-list { display: grid; gap: clamp(45px, 7vw, 110px) }
-.case-story { display: grid; grid-template-columns: 1.04fr .96fr; min-height: 570px; scroll-margin-top: 25px }
+.case-story { display: grid; grid-template-columns: 1.04fr .96fr; min-height: 570px }
 .case-visual { position: relative; min-height: 570px; overflow: hidden }
 .project-effect, .project-liquid { width: 100%; height: 100%; min-height: inherit }
 .project-art { position: relative; height: 100%; min-height: inherit; overflow: hidden; isolation: isolate }
@@ -180,6 +194,13 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--coral); outline
 .case-copy h3 { margin: 15px 0 4px; font-size: clamp(36px, 4vw, 68px); line-height: 1.15; letter-spacing: -.09em }
 .case-english { margin: 0; color: #9898a5; font: 800 12px Arial, sans-serif; letter-spacing: .15em }
 .case-description { max-width: 49ch; margin: 35px 0 28px; color: #4e5261; font-size: 14px; line-height: 2 }
+.case-process { width: 100%; margin-bottom: 24px; padding: 18px 0 16px; border-top: 1px solid #20233136 }
+.case-process>span { color: var(--purple); font-size: 11px; font-weight: 800 }
+.case-process ol { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 17px 0 0; padding: 0; list-style: none }
+.case-process li { position: relative; padding-top: 14px; border-top: 2px solid #202331a8 }
+.case-process li::before { content: ""; position: absolute; top: -5px; left: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--coral) }
+.case-process li strong { font-size: 12px }
+.case-process li p { margin: 6px 0 0; color: #6e7180; font-size: 11px; line-height: 1.65 }
 .case-outcome { display: grid; grid-template-columns: 78px 1fr; gap: 14px; width: 100%; padding-top: 20px; border-top: 1px solid #20233136 }
 .case-outcome span { color: var(--purple); font-size: 11px; font-weight: 800 }
 .case-outcome p { margin: 0; color: #6e7180; font-size: 12px; line-height: 1.8 }
@@ -196,6 +217,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--coral); outline
 .case-story--community .case-platform { margin-top: 30px; justify-self: start; background: #bce9d1; color: #215c50 }
 .case-story--community .case-description { grid-column: 2; grid-row: 2 / span 3; align-self: end; margin: 0 0 20px }
 .case-story--community .case-outcome { grid-column: 1; margin-top: 35px }
+.case-story--community .case-process { grid-column: 2; grid-row: 5 / span 2; align-self: start; margin-top: 18px }
 .case-story--community .tag-list { grid-column: 2; align-self: end }
 
 .education { background: var(--lemon) }
@@ -246,12 +268,19 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--coral); outline
 }
 @media (max-width: 760px) {
   :root { --edge: 22px }
-  .site-header { height: 69px; gap: 12px }
+  .site-header { top: 9px; height: 62px; gap: 12px; padding: 0 16px }
   .brand-mark { font-size: 25px }
   .brand-sub { font-size: 7px }
-  .site-header nav { gap: 16px; font-size: 11px }
-  .site-header nav a:nth-child(2), .site-header nav a:nth-child(4) { display: none }
+  .site-header .desktop-nav { display: none }
   .header-contact { display: none }
+  .mobile-menu { display: block; margin-left: auto }
+  .mobile-menu summary { display: flex; align-items: center; gap: 9px; cursor: pointer; list-style: none; font-size: 12px; font-weight: 800 }
+  .mobile-menu summary::-webkit-details-marker { display: none }
+  .menu-icon { font-size: 18px }
+  .mobile-menu nav { position: absolute; top: calc(100% + 10px); left: 0; right: 0; display: grid; gap: 0; padding: 9px 16px; border: 1px solid #20233128; border-radius: 14px; background: #fbf9f1f5; box-shadow: 0 15px 35px #20233124; backdrop-filter: blur(18px) }
+  .mobile-menu nav a { padding: 11px 4px; border-bottom: 1px solid #2023311c; font-size: 14px; font-weight: 800 }
+  .mobile-menu nav a:last-child { border-bottom: 0 }
+  .site-header nav a[aria-current="location"]::after { display: none }
   .hero { display: flex; flex-direction: column; align-items: stretch; min-height: 0; padding: 122px var(--edge) 75px }
   .hero-copy { order: 2; margin-top: -10px }
   .hero-visual { order: 1; align-self: center; width: min(100%, 490px); height: 360px }
@@ -304,6 +333,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--coral); outline
   .case-copy h3 { font-size: clamp(36px, 8vw, 53px) }
   .case-description, .case-story--community .case-description { margin: 28px 0 24px }
   .case-story--community .case-outcome { margin-top: 0 }
+  .case-story--community .case-process { margin-top: 0 }
   .case-story--video .art-sheet { left: 30%; width: 47% }
   .art-sheet strong { font-size: clamp(28px, 6vw, 43px) }
   .education-list { margin-left: 0 }
@@ -328,6 +358,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--coral); outline
   .scene-people i { width: 23px; height: 23px }
   .focus-list>div { min-height: 115px; padding: 13px }
   .focus-list>div strong { font-size: 12px }
+  .focus-list>div p { font-size: 10px }
   .case-index a { font-size: 9px }
   .case-index a span { font-size: 9px }
   .case-visual, .case-story--community .case-visual { height: 320px; min-height: 320px }
@@ -337,6 +368,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--coral); outline
   .case-story--video .art-sheet strong { font-size: 22px }
   .art-mini { min-width: 72px; padding: 8px; font-size: 6px }
   .case-outcome { grid-template-columns: 1fr; gap: 7px }
+  .case-process ol { gap: 8px }
+  .case-process li p { font-size: 10px }
   .contact h2 { font-size: 44px }
   .site-footer { font-size: 10px }
   .demo-notice { order: 3; width: 100% }

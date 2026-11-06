@@ -19,4 +19,4 @@ npm run dev
 
 仓库 Pages 设置选择 **Build and deployment → Source → GitHub Actions**。推送到 `main` 后，`.github/workflows/deploy.yml` 会自动构建并发布网站：<https://1243sd.github.io/my-profile/>。
 
-Canvas UI 组件源码位于 `components/canvasui/`。特效会在区域进入视口后加载，并响应系统“减少动态效果”设置。
+Canvas UI 组件源码位于 `components/canvasui/` 和 `src/components/canvasui/`。首屏使用 Clouds 与 Droplets，案例区使用 Liquid，联系区使用 Ripple。特效会在区域进入视口后加载，并响应系统“减少动态效果”设置。组件授权见 [`CANVAS_UI_LICENSE.md`](CANVAS_UI_LICENSE.md)。
